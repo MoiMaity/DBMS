@@ -1,0 +1,43 @@
+Assignment 4.4.22
+
+create table zipcodes(
+zip number(15) PRIMARY KEY,
+city varchar2(20));
+
+create table parts(
+pno number(15) PRIMARY KEY,
+pname varchar2(20),
+qoh varchar2(15),
+price number(15),
+lvl number(15));
+
+create table employees(
+eno number(15) PRIMARY KEY,
+ename varchar2(20),
+hdate varchar2(10),
+zip number(15) references zipcodes);
+
+create table customers(
+cno number(15) PRIMARY KEY,
+cname varchar2(15),
+street varchar2(15),
+phone number(10),
+zip number(15) references zipcodes);
+
+
+create table orders(
+ono number(15) PRIMARY KEY,
+cno number(15) references customers,
+eno number(15) references employees,
+perceived varchar2(10),
+shipped varchar2(10));
+
+
+create table odetails(
+ono number(15) references orders,
+pno number(15) references parts,
+qty number(10),
+primary key(ono,pno));
+
+
+
