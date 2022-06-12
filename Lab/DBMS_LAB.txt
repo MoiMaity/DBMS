@@ -1,0 +1,761 @@
+Assignment 1
+
+create table DEPT (
+DNO number(10) PRIMARY KEY,
+DNAME varchar2(20) NOT NULL,
+LOC varchar2(20));
+
+create table EMP (
+EMPNO number(10) PRIMARY KEY,
+ENAME varchar2(20) NOT NULL,
+JOB char(10),
+MGR number(10) NOT NULL,
+HIREDATE date,
+SAL number(5),
+COMM number(5),
+DEPTNO number(5));
+
+INSERT INTO DEPT values(10,'Accounting','New York');
+INSERT INTO DEPT values(20,'Research','Dallas');
+INSERT INTO DEPT values(30,'Sales','Chicago');
+INSERT INTO DEPT values(40,'Operations','Boston');
+
+ALTER TABLE EMP MODIFY (MGR number(10));
+
+insert into EMP values(7369 ,'Smith', 'Clerk' ,7902, '17-DEC-80' , 800, NULL, 20);
+
+insert into EMP values(7499 ,'Allen' ,'Salesman' ,7698 ,'20-FEB-81' ,1600 ,300, 30);
+
+insert into EMP values(7521 ,'Ward' ,'Salesman' ,7698 ,'22-FEB-81' ,1250, 500, 30);
+
+insert into EMP values(7566 ,'Jones' ,'Manager' ,7839 ,'02-APR-81', 2975, NULL, 20);
+
+insert into EMP values(7654 ,'Martin' ,'Salesman' ,7698 ,'28-SEP-81', 1250 ,1400 ,30);
+
+insert into EMP values(7698 ,'Blake' ,'Manager' ,7839 ,'01-MAY-81', 2850, NULL, 30);
+
+insert into EMP values(7782 ,'Clark' ,'Manager' ,7839 ,'09-JUN-81' ,2450 , NULL,10);
+
+insert into EMP values(7788 ,'Scott' ,'Analyst' ,7566, '09-DEC-82' ,3000 , NULL, 20);
+
+insert into EMP values(7839 ,'King' ,'President' ,NULL ,'17-NOV-81' ,5000 , NULL,10);
+
+insert into EMP values(7844 ,'Turner', 'Salesman' ,7698, '08-SEP-81' ,1500, 500, 30);
+
+insert into EMP values(7876 ,'Adams' ,'Clerk' ,7788, '12-JAN-83', 1100 , NULL,20);
+
+insert into EMP values(7900 ,'James' ,'Clerk' ,7698, '03-DEC-81' ,950,NULL, 30);
+
+insert into EMP values(7902 ,'Ford' ,'Analyst' ,7566, '04-DEC-81' ,3000,NULL , 20);
+
+insert into EMP values(7934 ,'Miller' ,'Clerk' ,7782 ,'23-JAN-82' ,1300,NULL , 10 );
+
+ALTER TABLE EMP ADD (Phone number(10));
+
+ALTER table EMP MODIFY (Job varchar2(10));
+
+ALTER TABLE EMP DROP COLUMN Phone;
+
+desc EMP;
+
+desc DEPT;
+
+create table SALESPEOPLE (
+SNUM number(10) PRIMARY KEY,
+SNAME varchar2(20),
+CITY varchar2(20),
+COMM varchar2(20));
+
+drop table SALESPEOPLE;
+
+create table CLIENT_MASTER (
+ClientNo varchar2(6),
+Name varchar2(20) NOT NULL,
+City varchar2(15),
+Pincode number(8),
+State varchar2(15),
+BalanceDue number(10,2),
+PRIMARY KEY(ClientNo),
+CHECK(ClientNo LIKE 'C%')
+);
+
+Select * from EMP;
+
+Select * from DEPT;
+
+CREATE TABLE PRODUCT_MASTER(
+PRODUCTNO varchar2(6),
+DESCRIPTION varchar2(15) NOT NULL,
+PROFITPERCENT number(4,2) NOT NULL,
+UNITMEASURE varchar2(10) NOT NULL,
+QTYINHAND number(8) NOT NULL,
+REORDERLVL number(8) NOT NULL,
+SELLPRICE number(8,2) NOT NULL, 
+COSTPRICE number(8,2) NOT NULL, 
+PRIMARY KEY(PRODUCTNO),
+CHECK(PRODUCTNO LIKE 'P%'),
+CHECK(SELLPRICE <> 0 AND COSTPRICE <> 0)
+);
+
+CREATE TABLE SALESMAN_MASTER(
+SALESMANNO varchar2(6),
+NAME varchar2(20) NOT NULL,
+ADDRESS1 varchar2(10) NOT NULL,
+ADDRESS2 varchar2(10),
+CITY varchar2(20),
+PINCODE number(7),
+STATE varchar2(20),
+SAL number(8,2) NOT NULL,
+TGTTOGET number(6,2) NOT NULL, 
+YTDSALES number(6,2) NOT NULL,
+REMARKS varchar2(20),
+PRIMARY KEY(SALESMANNO),
+CHECK(SALESMANNO LIKE 'S%' AND SAL<>0 AND TGTTOGET<>0)
+);
+
+CREATE TABLE SALES_ORDER(
+ORDERNO varchar2(6),
+ORDERDATE date,
+CLIENTNO varchar2(6),
+DELYADDRESS varchar2(25),
+SALESMANNO varchar2(6),
+DELYTYPE char(1) DEFAULT 'F',
+BILLEDYN char(1),
+DELYDATE date,
+ORDERSTATUS varchar2(10),
+PRIMARY KEY(ORDERNO),
+FOREIGN KEY(CLIENTNO) REFERENCES CLIENT_MASTER(CLIENTNO),
+FOREIGN KEY(SALESMANNO) REFERENCES SALESMAN_MASTER(SALESMANNO),
+CHECK(ORDERNO LIKE 'O%' AND ORDERSTATUS IN ('in process', 'fulfilled','backorder','cancelled') AND DELYDATE>=ORDERDATE AND DELYTYPE IN ('F','P'))
+);
+
+CREATE TABLE SALES_ORDER_DETAILS(
+ORDERNO varchar2(6),
+PRODUCTNO varchar2(6),
+QTYORDERED number(8),
+QTYDISP number(8),
+PRODUCTRATE number(10,2),
+PRIMARY KEY(ORDERNO,PRODUCTNO),
+FOREIGN KEY(ORDERNO) REFERENCES SALES_ORDER(ORDERNO),
+FOREIGN KEY(PRODUCTNO) REFERENCES PRODUCT_MASTER(PRODUCTNO)
+);
+
+insert into CLIENT_MASTER values('C00001','Ivan Bayross','Mumbai',4000054,'Maharashtra',15000);
+insert into CLIENT_MASTER values('C00002','Mamata Mazumdar','Madras',780001,'Tamil Nadu',0);
+insert into CLIENT_MASTER values('C00003','Chhaya Bankar','Mumbai',4000057,'Maharashtra',5000);
+insert into CLIENT_MASTER values('C00004','Ashwini Joshi','Bangalore',560001,'Karnataka',0);
+insert into CLIENT_MASTER values('C00005','Hansel Colaco','Mumbai',4000060,'Maharashtra',2000);
+insert into CLIENT_MASTER values('C00006','Deepak Sharma','Mangalore',560050,'Karnataka',0);
+
+insert into PRODUCT_MASTER values('P00001','T-Shirts','5','Piece',200,50,350,250);
+insert into PRODUCT_MASTER values('P0345','Shirts','6','Piece',150,50,500,350);
+insert into PRODUCT_MASTER values('P06734','Cotton Jeans','5','Piece',100,20,600,450);
+insert into PRODUCT_MASTER values('P07865','Jeans','5','Piece',100,20,750,500);
+insert into PRODUCT_MASTER values('P07868','Trousers','2','Piece',150,50,850,550);
+insert into PRODUCT_MASTER values('P07885','Pullovers','2.5','Piece',80,30,700,450);
+insert into PRODUCT_MASTER values('P07965','Denim Shirts','4','Piece',100,40,350,250);
+insert into PRODUCT_MASTER values('P07975','Lyers Tops','5','Piece',70,30,300,175);
+insert into PRODUCT_MASTER values('P08865','Skirts','5','Piece',75,30,450,300);
+
+insert into SALESMAN_MASTER values('S00001','Aman','A/14','Jadavpur','Kolkata',700032,'West Bengal',3000,100,50,'Good');
+insert into SALESMAN_MASTER values('S00002','Omkar','65','Chandni','Delhi',110006,'Delhi',3000,200,100,'Good');
+insert into SALESMAN_MASTER values('S00003','Raj','P-7','Bandra','Mumbai',400032,'Maharashtra',3000,200,100,'Good');
+insert into SALESMAN_MASTER values('S00004','Ashish','A/5','Agara','Bengaluru',560034,'Karnataka',3500,200,150,'Good');
+
+insert into SALES_ORDER values('O19001','10-JUL-02','C00001','320/A','S00001','F','N','20-JUL-02','in process');
+insert into SALES_ORDER values('O19002','15-JUN-02','C00002','7/37/B','S00002','P','N','27-JUN-02','cancelled');
+insert into SALES_ORDER values('O46865','11-FEB-02','C00003','7/47/B','S00003','F','Y','20-FEB-02','fulfilled');
+insert into SALES_ORDER values('O19003','15-MAR-02','C00001','380/A','S00001','F','Y','07-APR-02','fulfilled');
+insert into SALES_ORDER values('O46866','12-MAY-02','C00004','12/1/B','S00002','P','N','22-MAY-02','cancelled');
+insert into SALES_ORDER values('O19008','14-JUL-02','C00005','7/77/B','S00004','F','N','26-JUL-02','in process');
+
+insert into SALES_ORDER_DETAILS values('O19001','P00001',4,4,525);
+insert into SALES_ORDER_DETAILS values('O19001','P07965',2,1,8400);
+insert into SALES_ORDER_DETAILS values('O19001','P07885',2,1,5250);
+insert into SALES_ORDER_DETAILS values('O19002','P00001',10,0,525);
+insert into SALES_ORDER_DETAILS values('O46865','P07868',3,3,3150);
+insert into SALES_ORDER_DETAILS values('O46865','P07885',3,1,5250);
+insert into SALES_ORDER_DETAILS values('O46865','P00001',10,10,525);
+insert into SALES_ORDER_DETAILS values('O46865','P0345',4,4,1050);
+insert into SALES_ORDER_DETAILS values('O19003','P0345',2,2,1050);
+insert into SALES_ORDER_DETAILS values('O19003','P06734',1,1,12000);
+insert into SALES_ORDER_DETAILS values('O46866','P07965',1,0,8400);
+insert into SALES_ORDER_DETAILS values('O46866','P07975',1,0,1050);
+insert into SALES_ORDER_DETAILS values('O19008','P00001',10,5,525);
+insert into SALES_ORDER_DETAILS values('O19008','P07975',5,3,1050);
+
+
+ASSIGNMENT 2
+
+1)
+select NAME from CLIENT_MASTER where Name LIKE '_a%';
+
+
+2)
+select ClientNo from CLIENT_MASTER where city LIKE '_a%';
+
+
+3)
+select ClientNo from CLIENT_MASTER where city='Bombay' OR city='Delhi';
+
+
+4)
+select ClientNo from CLIENT_MASTER where BalanceDue>10000;
+
+5)
+select * from SALES_ORDER where EXTRACT(MONTH FROM ORDERDATE) LIKE 1;
+
+6)
+select * from SALES_ORDER where CLIENTNO='C00001' OR CLIENTNO='C00002';
+
+7)
+select PRODUCTNO from PRODUCT_MASTER where SELLPRICE>2000 AND COSTPRICE<=5000;
+
+8)
+select PRODUCTNO from PRODUCT_MASTER where SELLPRICE>1500;
+
+
+select PRODUCTNO,DESCRIPTION,PROFITPERCENT,UNITMEASURE,QTYINHAND,REORDERLVL,SELLPRICE*1.5 as "new_price",COSTPRICE from PRODUCT_MASTER;
+
+9)
+select Name,City,State from CLIENT_MASTER where State NOT LIKE 'Maharashtra';
+
+
+10)
+select COUNT(ORDERNO) from SALES_ORDER;
+
+
+11)
+select AVG(SELLPRICE) from PRODUCT_MASTER;
+
+
+12)
+select MAX(SELLPRICE) AS "max_price", MIN(SELLPRICE) AS "min_price" from PRODUCT_MASTER;
+
+
+13)
+select COUNT(PRODUCTNO) from PRODUCT_MASTER where SELLPRICE>=1500;
+
+
+14)
+select PRODUCTNO from PRODUCT_MASTER where QTYINHAND<REORDERLVL;
+
+
+15)
+select ORDERNO,to_char(ORDERDATE,'day') from SALES_ORDER;
+
+
+ASSIGNMENT 3
+
+1) update product_master set Reorderlvl=80 where Descriptor like 'shirts';
+2) update product_master set sellprice=sellprice+sellprice*0.1;
+3) update salesman_master set YTDsales=35 where salesmanno like 'S00003';
+4) update sales_order_details set QTYDisp=QTYOrdered where productrate<=1000;
+5) update salesman_master set pincode=400001 where city like 'Mumbai';
+6) update product_master set reorderlvl=2*reorderlvl;
+7) delete from sales_order_details where orderno in((select orderno from sales_order where orderstatus='cancelled'));
+   delete from sales_order where orderstatus='cancelled';
+8) delete from sales_order_details where orderno in(select orderno from sales_order);
+   delete from sales_order where salesmanno in(select salesmanno from salesman_master);
+   delete from salesman_master;
+   insert into salesman_master values('S000001','Aman','A/14','Jadavpur','Kolkata',700032,'West Bengal',3000,100,50,'Good');
+   insert into salesman_master values('S000001','Omkar','65','Chandni','Delhi',110006,'Delhi',3000,200,100,'Good');
+9) select * from product_master where qtyinhand<reorderlvl;
+10) update emp8 set mgr=(select empno from emp8 where ename like 'Blake') where ename in('Smith','Adams');
+
+ASSIGNMENT 4
+
+CREATE TABLE EMP_48(
+EMPNO NUMBER(10) CHECK(EMPNO>7000 AND EMPNO<8000) PRIMARY KEY,
+ENAME VARCHAR2(10),
+JOB VARCHAR2(10),
+MGR NUMBER(10) CHECK(MGR>7000 AND MGR<8000),
+HIREDATE DATE,
+SAL NUMBER(10),
+COMM NUMBER(10) DEFAULT 0 CHECK(COMM<1500),
+DEPT_NAME VARCHAR2(10)
+);
+
+insert into EMP_48 values(7499 ,'Andy' ,'Salesman' ,7698 ,'20-FEB-81' ,1600,300,'Sales');
+
+insert into EMP_48 values(7521 ,'Jim' ,'Salesman' ,7698 ,'22-FEB-81' ,1250, 500,'Sales');
+
+insert into EMP_48 values(7566 ,'Michael' ,'Manager' ,7839 ,'02-APR-81', 2975, 0, 'HR');
+
+insert into EMP_48 values(7654 ,'Dwight' ,'Salesman' ,7698 ,'28-SEP-81', 1250 ,1400 ,'Sales');
+
+insert into EMP_48 values(7698 ,'Blake' ,'Manager' ,7839 ,'01-MAY-81', 2850,0, 'HR');
+
+insert into EMP_48 values(7782 ,'David' ,'Manager' ,7839 ,'09-JUN-81' ,2450 ,0,'HR');
+
+insert into EMP_48 values(7788 ,'Oscar' ,'Analyst' ,7566, '09-DEC-82' ,3000 ,0, 'Analysis');
+
+insert into EMP_48 values(7839 ,'King' ,'President' ,NULL ,'17-NOV-81' ,5000 ,0,'Board');
+
+insert into EMP_48 values(7844 ,'Pam', 'Salesman' ,7698, '08-SEP-81' ,1500, 500, 'Sales');
+
+insert into EMP_48 values(7876 ,'Adams' ,'Clerk' ,7788, '12-JAN-83', 1100 ,0,'Clerk');
+
+insert into EMP_48 values(7900 ,'Ryan' ,'Clerk' ,7698, '03-DEC-81' ,950,0, 'Clerk');
+
+insert into EMP_48 values(7902 ,'Angela' ,'Analyst' ,7566, '04-DEC-81' ,3000,0, 'Analysis');
+
+insert into EMP_48 values(7777 ,'Turner' ,'Analyst' ,7866, '06-DEC-81' ,3000,0, 'Analysis');
+
+1)
+select ENAME from EMP_48 where JOB NOT LIKE 'Manager';
+
+2)
+select ENAME from EMP_48 where ENAME LIKE '_i%';
+
+3)
+select count(*) from EMP_48 where JOB LIKE 'Manager';
+
+4)
+select MAX(SAL) as 'Maximum', MIN(SAL) as 'Minimum', SUM(SAL) as 'Total', AVG(SAL) as 'Average' from EMP_48;
+
+5)
+select MAX(SAL) as 'Maximum', MIN(SAL) as 'Minimum', SUM(SAL) as 'Total', AVG(SAL) as 'Average', JOB from EMP_48 GROUP BY JOB;
+
+6)
+select COUNT(*) as 'Number of Manager' from EMP_48 where JOBLIKE 'Manager';
+
+7)
+select ENAME from EMP_48 where HIREDATE>'01-JAN-1980';
+
+8)
+select ENAME from EMP_48 E where E.JOB LIKE 'Clerk' and E.SAL=(Select MIN(E.SAL) from EMP_48 E);
+
+9)
+select ENAME from EMP_48 E where E.JOB LIKE 'Salesman' and E.SAL=(Select MAX(E.SAL) from EMP_48 E);
+
+10)
+select ENAME from EMP_48 E where E.SAL>(select E.SAL from EMP_48 E where E.ENAME like 'Turner';
+
+11)
+select Dept_Name from Emp_48 where ENAME LIKE 'Ford';
+
+12)
+Select E.DEPTNAME from EMP_48 E where E.SAL=(SELECT MAX(SAL) from Emp_66);
+
+DUAL
+
+DUAL:
+1)
+SELECT 2+5 FROM DUAL;
+SELECT 2-5 FROM DUAL;
+SELECT 2/5 FROM DUAL;
+SELECT 2*5 FROM DUAL;
+SELECT MOD(2,5) FROM DUAL;
+
+2)
+SELECT SYSDATE FROM DUAL;
+3)
+SELECT UPPER('lg') FROM DUAL;
+4)
+SELECT SUBSTR( 'SOURAV', 1, 4 ) SUBSTRING FROM dual;
+5)
+SELECT SYSDATE FROM DUAL;
+SELECT TO_DATE(current_date - 1) AS yesterday_date FROM dual;
+SELECT TO_DATE(current_date + 1) AS tomorrow_date FROM dual;
+6)
+SELECT EXTRACT(MONTH FROM CURRENT_DATE) AS "MONTH", EXTRACT(YEAR FROM CURRENT_DATE) AS "YEAR" FROM DUAL;
+7)
+select  SIN(60) Sine from dual;
+select  Tan(60) Tangent from dual;
+
+8)
+select floor(3.456) Floor from dual;
+select ciel(3.456) Ciel from dual;
+SELECT ABS(-17.36) FROM dual;
+select dbms_random.random from dual;
+9)
+SELECT SQRT(5) FROM DUAL;
+
+SELECT UPPER('IVAN BAYROSS') FROM DUAL;
+SELECT LOWER('IVAN BAYROSS') FROM DUAL;
+                             
+SELECT TO_DATE(SYSDATE,'DD-MM-YYYY') FROM DUAL;
+
+SELECT MONTHS_BETWEEN('02-JUL-01','02-JAN-01') FROM DUAL;
+
+SELECT TO_CHAR(
+ADD_MONTHS(SYSDATE,5),
+'DD-MM-YYYY') FROM DUAL;
+
+SELECT ROUND(15.19,1) FROM DUAL;
+
+
+
+ASSIGNMENT 5
+
+
+
+create table SAILORS(
+s_id varchar(10) primary key,
+s_name varchar(20),
+rating number(2),
+age number(2)
+);
+ 
+create table BOATS(
+b_id varchar(10) primary key,
+b_name varchar(20),
+color char(10)
+);
+ 
+ 
+create table RESERVES(
+s_id varchar(10),
+b_id varchar(10),
+day char(10),
+primary key (s_id, b_id),
+foreign key (s_id) references SAILORS(s_id),
+foreign key (b_id) references BOATS(b_id)
+);
+
+INSERT INTO SAILORS VALUES ('S00001','Ivan',4,35);
+INSERT INTO SAILORS VALUES ('S00002','Mamata',5,32);
+INSERT INTO SAILORS VALUES ('S00003','Chhaya',5,36);
+INSERT INTO SAILORS VALUES ('S00004','Ashwini',3,35);
+INSERT INTO SAILORS VALUES  ('S00005','Tarun',3,38);
+INSERT INTO SAILORS VALUES ('S00006','Deepak',4,30);
+INSERT INTO SAILORS VALUES ('S00007','Ashwi',3,35);
+INSERT INTO SAILORS VALUES  ('S00008','Rakul',3,38);
+INSERT INTO SAILORS VALUES ('S00009','Rahul',4,30);
+
+INSERT INTO BOATS VALUES ('B00001','Iva','red');
+INSERT INTO BOATS VALUES ('B00002','Mama','green');
+INSERT INTO BOATS VALUES ('B00003','Vikram','green');
+INSERT INTO BOATS VALUES ('B00004','Ash','blue');
+INSERT INTO BOATS VALUES  ('B00005','Taru','blue');
+INSERT INTO BOATS VALUES ('B00006','Deep','red');
+INSERT INTO BOATS VALUES ('B00007','Avi','yellow');
+INSERT INTO BOATS VALUES  ('B00008','Raku','black');
+INSERT INTO BOATS VALUES ('B00009','Rahu','black');
+
+INSERT INTO RESERVES VALUES('S00001','B00001','MONDAY');
+INSERT INTO RESERVES VALUES('S00002','B00002','TUESDAY');
+INSERT INTO RESERVES VALUES('S00003','B00003','WEDNESDAY');
+INSERT INTO RESERVES VALUES('S00004','B00004','THURSDAY');
+INSERT INTO RESERVES VALUES('S00005','B00005','FRIDAY');
+INSERT INTO RESERVES VALUES('S00006','B00006','SATURDAY');
+INSERT INTO RESERVES VALUES('S00007','B00007','SUNDAY');
+
+2A. 
+SELECT B.COLOR FROM BOATS B,RESERVES R, SAILORS S WHERE
+S.s_name = 'Tarun' AND S.s_id=R.s_id AND B.b_id=R.b_id;
+ 
+B. 
+SELECT S.s_id,S.s_name FROM SAILORS S , RESERVES R WHERE
+R.day = 'MONDAY' AND S.s_id=R.s_id;
+ 
+ 
+C. 
+SELECT B.B_ID, B.B_NAME FROM BOATS B,RESERVES R WHERE
+B.COLOR IN ('red','green') AND B.B_ID=R.B_ID;
+ 
+D.
+DELETE FROM SAILORS WHERE AGE>60;
+
+
+
+
+create table TEACHER(Tid varchar(6) primary key,
+Name varchar(20),
+Dept varchar(15)
+);
+ 
+create table SUBJECT(Subno varchar(6) primary key,Subtitle varchar(20));
+ 
+ 
+create table TAUGHTBY(
+Tid varchar(6),Subno varchar(6),
+foreign key (Tid) REFERENCES TEACHER(Tid),
+foreign key(Subno) REFERENCES SUBJECT(Subno));
+ 
+create table STUDENT 
+(Rollno number(3) primary key,
+Sname varchar2(20),
+City varchar2(10)
+);
+ 
+INSERT INTO TEACHER VALUES('T00001','IVA','PHYSICS');
+INSERT INTO TEACHER VALUES('T00002','MAMATA','PHYSICS');
+INSERT INTO TEACHER VALUES('T00003','CHAYA','MATHS');
+INSERT INTO TEACHER VALUES('T00004','ASHWINI','PHYSICS');
+INSERT INTO TEACHER VALUES('T00005','VIKRAM','CHEMISTRY');
+INSERT INTO TEACHER VALUES('T00006','DEEPAK','MATHS');
+INSERT INTO TEACHER VALUES('T00007','ROSHNI','CHEMISTRY');
+INSERT INTO TEACHER VALUES('T00008','SALONI','MATHS');
+INSERT INTO TEACHER VALUES('T00010','RON','COMPUTER');
+ 
+INSERT INTO SUBJECT VALUES('S00001','THERMODYNAMICS');
+INSERT INTO SUBJECT VALUES('S00002','NUMERIC METHOD');
+INSERT INTO SUBJECT VALUES('S00003','PROBABILITY');
+INSERT INTO SUBJECT VALUES('S00004','LAWS OF MOTION');
+INSERT INTO SUBJECT VALUES('S00005','GRAVITY');
+INSERT INTO SUBJECT VALUES('S00006','ORGANIC CHEMISTRY');
+INSERT INTO SUBJECT VALUES('S00007','INORGANIC CHEMISTRY');
+INSERT INTO SUBJECT VALUES('S00008','DISCRETE MATHS');
+INSERT INTO SUBJECT VALUES('S00010','DBMS');
+ 
+INSERT INTO TAUGHTBY VALUES('T00001','S00001');
+INSERT INTO TAUGHTBY VALUES('T00002','S00002');
+INSERT INTO TAUGHTBY VALUES('T00003','S00003');
+INSERT INTO TAUGHTBY VALUES('T00004','S00004');
+INSERT INTO TAUGHTBY VALUES('T00005','S00005');
+INSERT INTO TAUGHTBY VALUES('T00006','S00006');
+INSERT INTO TAUGHTBY VALUES('T00007','S00007');
+INSERT INTO TAUGHTBY VALUES('T00008','S00008');
+INSERT INTO TAUGHTBY VALUES('T00010','S00010');
+ 
+ 
+INSERT INTO STUDENT VALUES (1,'Ivan','KOLKATA');
+INSERT INTO STUDENT VALUES (2,'Mamata','DELHI');
+INSERT INTO STUDENT VALUES (3,'Chhaya','MUMBAI');
+INSERT INTO STUDENT VALUES (4,'Ashwini','DELHI');
+INSERT INTO STUDENT VALUES  (5,'Tarun','KOLKATA');
+INSERT INTO STUDENT VALUES (6,'Deepak','DELHI');
+INSERT INTO STUDENT VALUES (7,'Ashwi','MUMBAI');
+INSERT INTO STUDENT VALUES  (8,'Rakul','KOLKATA');
+INSERT INTO STUDENT VALUES (21,'Kumble','KOLKATA');
+INSERT INTO STUDENT VALUES (24,'Morrison','CHENNAI');
+INSERT INTO STUDENT VALUES (33,'Chirag','MUMBAI');
+INSERT INTO STUDENT VALUES (23,'Ashwin','KOLKATA');
+ 
+ 
+ 
+1. 
+Select DISTINCT(T.Name) from TEACHER T, TAUGHTBY TB, SUBJECT S where 
+ 
+T.Tid=TB.Tid AND T.Dept ='PHYSICS' AND   TB.SUBNO = (SELECT SUBNO FROM 
+ 
+SUBJECT WHERE SUBTITLE = 'THERMODYNAMICS');
+
+
+ 
+2.
+UPDATE SUBJECT 
+SET SUBTITLE ='RDBMS'
+WHERE SUBTITLE ='DBMS';
+ 
+3. 
+SELECT * FROM STUDENT WHERE CITY='KOLKATA' AND ROLLNO BETWEEEN 20 AND 25;
+ 
+4. 
+SELECT * FROM STUDENT where CITY ='KOLKATA' ORDER BY ROLLNO DESC;
+
+
+ASSIGNMENT JOINS
+
+CREATE TABLE EMPLOYEES(
+ENO NUMBER(10) PRIMARY KEY,
+ENAME VARCHAR2(20),
+ZIP NUMBER(10),
+HDATE DATE);
+ 
+CREATE TABLE ZIPCODES(
+ZIP NUMBER(10) PRIMARY KEY,
+CITY VARCHAR2(20));
+ 
+CREATE TABLE PARTS(
+PNO NUMBER(10) PRIMARY KEY,
+PNAME VARCHAR2(20),
+QOH VARCHAR2(20),
+PRICE NUMBER(10),
+LVL NUMBER(5));
+ 
+CREATE TABLE CUSTOMERS_1(
+CNO NUMBER(10) PRIMARY KEY,
+CNAME VARCHAR2(20),
+STREET VARCHAR2(20),
+ZIP NUMBER(10),
+PHONE NUMBER(15));
+ 
+CREATE TABLE ORDERS(
+ONO NUMBER(10) PRIMARY KEY,
+CNO NUMBER(10) REFERENCES CUSTOMERS_1(CNO),
+ENO NUMBER(10) REFERENCES EMPLOYEES(ENO),
+PRECEIVED VARCHAR(20),
+SHIPPED DATE);
+ 
+CREATE TABLE ODETAILS(
+ONO NUMBER(10) REFERENCES ORDERS(ONO),
+PNO NUMBER(10) REFERENCES PARTS(PNO),
+QTY NUMBER(10));
+ 
+ 
+----------------INSERTION OF RECORDS---------->
+Insert into ZIPCODES values(67226,'Wichia');
+Insert into ZIPCODES values(60606,'Fort Dodge');
+Insert into ZIPCODES values(50302,'Kansas City');
+Insert into ZIPCODES values(54444,'Columbia');
+Insert into ZIPCODES values(66002,'Liberal');
+Insert into ZIPCODES values(61111,'Fort Hays');
+ 
+Insert into EMPLOYEES values (1000,'Jones',67226,'12-DEC-95');
+Insert into EMPLOYEES values (1001,'Smith',60606,'01-JAN-92');
+Insert into EMPLOYEES values (1002,'Jones',50302,'01-SEP-94');
+ 
+Insert into PARTS values (10506, 'Land Before Time I' , 200, 19, 20);
+Insert into PARTS values (10507, 'Land Before Time II' , 156, 19, 20);
+Insert into PARTS values (10508, 'Land Before Time III' , 190, 19, 20);
+Insert into PARTS values (10509, 'Land Before Time IV' , 60, 19, 20);
+Insert into PARTS values (10601, 'Sleeping Beauty' , 300, 24, 20);
+Insert into PARTS values (10701, 'When Harry met Sally' , 120, 19, 30);
+Insert into PARTS values (10800, 'Dirty Harry' , 140, 14, 30);
+Insert into PARTS values (10900, 'Dr. Zhivago' , 100, 24, 30);
+ 
+Insert into CUSTOMERS_1 values(1111,'Charles','123 Main St', 67226, 3166365555);
+Insert into CUSTOMERS_1 values(2222,'Bertram','237 Ash Ave', 67226, 3166895555);
+Insert into CUSTOMERS_1 values(3333,'Barbara','111 Inwood St', 60606, 3161111234);
+ 
+Insert into ORDERS values(1020,1111,1000,'10-DEC-94','12-DEC-94');
+Insert into ORDERS values(1021,1111,1000,'12-JAN-95','15-JAN-95');
+Insert into ORDERS values(1022,2222,1001,'13-FEB-95','20-FEB-95');
+Insert into ORDERS values(1023,3333,1002,'20-JUN-97','12-DEC-95');
+ 
+INSERT INTO ODETAILS VALUES(1020, 10506, 1);
+INSERT INTO ODETAILS VALUES(1020,10507,1);
+INSERT INTO ODETAILS VALUES(1020,10508,2);
+INSERT INTO ODETAILS VALUES(1020,10509,3);
+INSERT INTO ODETAILS VALUES(1021,10601,4);
+INSERT INTO ODETAILS VALUES(1022,10601,1);
+INSERT INTO ODETAILS VALUES(1022,10701,1);
+INSERT INTO ODETAILS VALUES(1023,10800,1);
+INSERT INTO ODETAILS VALUES(1023,10900,1);
+ 
+ 
+-------------------QUERIES--------------------
+1.SELECT PNO,PNAME FROM PARTS WHERE PRICE<20;
+2.SELECT PNO FROM ODETAILS;
+3.SELECT CNAME FROM CUSTOMERS_1 WHERE CNAME LIKE 's%';
+4. SELECT ONO,CNAME FROM ORDERS O,CUSTOMERS_1 C WHERE O.CNO=C.CNO
+AND SHIPPED=NULL;
+5.SELECT DISTINCT CNAME ,ENAME FROM CUSTOMERS_1 C, EMPLOYEES E,ORDERS O
+WHERE O.CNO=C.CNO AND O.ENO=E.ENO;
+6. SELECT ENAME FROM EMPLOYEES WHERE HDATE=(SELECT MIN(HDATE) FROM EMPLOYEES);
+7.SELECT PNO,PNAME,PRICE FROM PARTS WHERE PRICE>20000 ORDER BY PNO ASC;
+8. SELECT P.PNO, P.PNAME, O.QTY*P.PRICE AS "TOTAL SALES"
+FROM PARTS P, ODETAILS O WHERE P.PNO=O.PNO;
+9.SELECT SUM(QTY) FROM ODETAILS WHERE PNO=10601;
+10. SELECT ENO FROM EMPLOYEES WHERE ZIP IN(SELECT ZIP FROM ZIPCODES 
+WHERE CITY LIKE 'Mumbai');
+
+ASSIGNMENT 6
+
+CREATE TABLE CUSTOMERS(
+CUSTOMERID NUMBER(3) PRIMARY KEY,
+CUSTOMERNAME VARCHAR2(30),
+CONTACTNAME VARCHAR2(30),
+ADDRESS VARCHAR2(105),
+CITY VARCHAR2(20),
+POSTALCODE NUMBER(5),
+COUNTRY VARCHAR2(15));
+ 
+CREATE TABLE SUPPLIERS(
+SUPPLIERID NUMBER(3) PRIMARY KEY,
+SUPPLIERNAME VARCHAR2(30),
+CONTACTNAME VARCHAR2(30),
+ADDRESS VARCHAR2(75),
+CITY VARCHAR2(20),
+POSTALCODE NUMBER(5),
+COUNTRY VARCHAR2(15));
+ 
+INSERT INTO CUSTOMERS VALUES(1,'Alfreds Futter','Maria Anders','Obere Str.57','Berlin',12209,'Germany');
+INSERT INTO CUSTOMERS VALUES(2,'AnaSE helados','Ana Trujillo','Avda Construction 2222','Mexico D.F',05021,'Mexico');
+INSERT INTO CUSTOMERS VALUES(3,'Antonio Moreno','Antonio Moreno','Mataderos 2321','Mexico D.F',05023,'Mexico');
+ 
+INSERT INTO SUPPLIERS VALUES(1,'Exotic Liquid','Charlotte Cooper','49 Gilbert St.','Berlin',12209,'Germany');
+INSERT INTO SUPPLIERS VALUES(2,'Ana helados','Ana Trujillo','Avda Construction 2222','Mexico D.F',05023,'Mexico');
+INSERT INTO SUPPLIERS VALUES(3,'Grandma Kellys Homestead','Regina Murphy','707 Oxford Rd.','Ann Arbor',48104,'USA');
+ 
+ 
+1. SELECT CITY
+FROM CUSTOMERS
+UNION
+SELECT CITY
+FROM SUPPLIERS;
+ 
+2. SELECT CITY
+FROM CUSTOMERS
+UNION ALL
+SELECT CITY
+FROM SUPPLIERS;
+ 
+3. SELECT City, Country FROM Customers
+WHERE Country='Germany'
+UNION ALL
+SELECT City, Country FROM Suppliers
+WHERE Country='Germany'
+ORDER BY City;
+ 
+4. SELECT CUSTOMERNAME FROM CUSTOMERS
+INTERSECT
+SELECT SUPPLIERNAME FROM SUPPLIERS;
+ 
+5. SELECT DISTINCT c.country FROM customers c
+WHERE NOT EXISTS (SELECT * FROM suppliers s WHERE s.country = c.country);
+
+
+ASSIGNMENT 7
+
+1) Select name from emp where(select max(sal) from emp);
+2) Select name from emp where(select max(sal) from emp.department where department_name='salesman');
+3) Select name from emp where(select min(sal) from emp.department where department_name='clerk');
+4) Select d.dname from dept d where d.dno=(select deptno from emp group by deptno having avg(sal)=(select max(avg(sal)) from emp);
+5) Select ename from emp where sal>(select sal from emp where ename='Turner');
+6) Select ename from emp where hiredate>(select hiredate from em where ename like 'ALLEN');
+7) Select dname from dept where dno=(select deptno from emp where ename='Ford')
+8) Select dname from dept where dno=(select deptno from emp where sal=(select max(sal) from emp));
+9) Select loc from dept where dno=(select deptno from emp where ename='Smith');
+10) Select loc from dept where dno in(select deptno from emp where job='Manager');
+11) Select comm from emp where ename like 'MARTIN';
+12) Select ename from emp where sal>(select max(sal) from emp where deptno in(select dno from dept where loc = "Dallas"));
+13) Select dname from dept where dno not in(select deptno from emp);
+14) Select ename from emp where hiredate in(select hiredate from emp where ename like 'Adams');
+15) Select dname from dept where dno in(select deptno from emp where comm is NOT NULL);
+16) Select ename from emp where sal in(select min(sal) from emp group by deptno);
+17) Select dname from dept where exists(select deptno from emp group by deptno having count(*)>1);
+
+ASSIGNMENT 8
+
+create table salespeople(
+	snum number(20) Primary key,
+	sname varchar2(20),
+	city varchar2(20),
+	comm number(5));
+create table customer(
+	cnum number(20) Primary key,
+	cname varchar2(20),
+	city varchar2(20),
+	rating number(5),
+	snum number(20) references Salespeople(snum));
+create table order_48(
+	cnum number(20) Primary key,
+	amt number(10),
+	odate Date,
+	cnum number(20) references customer(cnum),
+	snum number(20) references salespeople(snum));
+
+insert into salespeople values(1,'AMIT','Kolkata',1000);
+insert into customer values(2, 'SALINI','Kolkata',10,10);
+insert into orders_48(3,3000,'09-DEC-2000',2,10);
+
+Queries
+
+1) Select cname from customer where rating=(select max(rating) from customers);
+2) Select distinct sname,count(snum) from salespeople group by city;
+3) Select snum,avg(AMT),count(cnum) from orders_48 group by sum;
+4) Select snum from orders_48 group by sum having count(snum)>1;
+5) create view salespeople_customer_orders as select s.sname, c.cname, o.onum, from salespeople s, orders_48 o, customer c where o.snum=s.snum and o.cnum=c.cnum; 
+6) create view salespeople as select snum,comm from salespeople where comm>=1000 and comm<=2000 with check option;
+
+
+
+
+
+
+
+
