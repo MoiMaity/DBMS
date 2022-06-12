@@ -739,10 +739,3 @@ Queries
 5) create view salespeople_customer_orders as select s.sname, c.cname, o.onum, from salespeople s, orders_48 o, customer c where o.snum=s.snum and o.cnum=c.cnum; 
 6) create view salespeople as select snum,comm from salespeople where comm>=1000 and comm<=2000 with check option;
 
-
-
-
-
-
-
-
